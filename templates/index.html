@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect Four</title>
+    <link rel="stylesheet" href="/static/styles/style.css" />
+  </head>
+  <body>
+    <h1>Connect Four</h1>
+    <p>Whoever scores three first wins</p>
+    <div id="board-container">
+      <table id="board"></table>
+    </div>
+    <div id="winner-container">
+      <p id="winner"></p>
+      <button id="resetBoardButton" style="display: none">Next round</button>
+    </div>
+    <button id="resetAllButton">New game</button>
+    <div id="score-container">
+      <p id="playerScore">Player Score: 0</p>
+      <p id="aiScore">AI Score: 0</p>
+    </div>
+    <script src="/static/scripts/script.js"></script>
+  </body>
+</html>

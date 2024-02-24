@@ -1,0 +1,33 @@
+body {
+  text-align: center;
+}
+
+button {
+  display: inline;
+}
+
+#board-container {
+  margin: 20px; /* Adjust the margin as needed */
+}
+
+table {
+  border-collapse: collapse;
+  margin: auto; /* Center the table horizontally */
+}
+
+td {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#winner-container #winner {
+  display: inline;
+}
+
+#score-container p {
+  display: inline;
+}
