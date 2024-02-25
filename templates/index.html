@@ -7,20 +7,31 @@
     <link rel="stylesheet" href="/static/styles/style.css" />
   </head>
   <body>
-    <h1>Connect Four</h1>
-    <p>Whoever scores three first wins</p>
-    <div id="board-container">
-      <table id="board"></table>
-    </div>
-    <div id="winner-container">
-      <p id="winner"></p>
-      <button id="resetBoardButton" style="display: none">Next round</button>
-    </div>
-    <button id="resetAllButton">New game</button>
-    <div id="score-container">
-      <p id="playerScore">Player Score: 0</p>
-      <p id="aiScore">AI Score: 0</p>
-    </div>
+    <!-- Header -->
+    <header id="header">Connect Four</header>
+    <!-- Main -->
+    <main id="main" style="display: none">
+      <p>Whoever scores three first wins</p>
+      <!-- Board -->
+      <div id="boardContainer">
+        <table id="board"></table>
+      </div>
+      <!-- Winner message -->
+      <div id="winnerContainer">
+        <p id="winner"></p>
+        <button id="resetBoardButton" style="display: none">Next round</button>
+        <button id="playAgainButton" style="display: none">Play again</button>
+      </div>
+      <!-- Scores -->
+      <div id="scoreContainer">
+        <p id="playerScore">Player Score: 0</p>
+        <p id="aiScore">AI Score: 0</p>
+      </div>
+    </main>
+    <!-- Exit button -->
+    <button id="resetAllButton" style="display: none">Exit</button>
+    <!-- Restart game button -->
+    <button id="startGameButton">Start game</button>
     <script src="/static/scripts/script.js"></script>
   </body>
 </html>

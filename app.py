@@ -10,11 +10,11 @@ def initialize_board():
 # Initialize the game board
 board = initialize_board()
 current_player = 'X'
+# cells_occupied = 0 #To track how many boxes are occupied
 
 # Initialize scores 
 player_score = 0
 ai_score = 0
-
 
 #Function to check the winner
 #############################
@@ -109,7 +109,11 @@ def move():
     winner = check_winner()
     if winner:
         player_score += 1
-        return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': f'{winner} won the round'})
+        if(player_score == 3):
+            winner_message = "X is the winner"
+        else:
+            winner_message = "X won the round"
+        return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': winner_message})
 
     # AI move
     ai_col = ai_move()
@@ -123,7 +127,11 @@ def move():
     winner = check_winner()
     if winner:
         ai_score += 1
-        return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': f'{winner} won the round'})
+        if(ai_score == 3):
+            winner_message = "O is the winner"
+        else:
+            winner_message = "O won the round"
+        return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': winner_message})
 
     if winner == 'X':
         player_score += 1
@@ -133,13 +141,7 @@ def move():
         winner_message = 'O won the round'
     else:
         winner_message = None
-
-    # Check for game winner
-    if player_score == 3:
-        winner_message = 'X is the winner'
-    elif ai_score == 3:
-        winner_message = 'O is the winner'
-
+        
     return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': winner_message})
 #######################################
 

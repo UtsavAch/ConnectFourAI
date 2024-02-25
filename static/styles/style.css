@@ -2,17 +2,21 @@ body {
   text-align: center;
 }
 
+#main {
+  position: relative;
+}
+
 button {
   display: inline;
 }
 
-#board-container {
-  margin: 20px; /* Adjust the margin as needed */
+#boardContainer {
+  margin: 20px;
 }
 
 table {
   border-collapse: collapse;
-  margin: auto; /* Center the table horizontally */
+  margin: auto;
 }
 
 td {
@@ -24,10 +28,20 @@ td {
   cursor: pointer;
 }
 
-#winner-container #winner {
+#winnerContainer {
+  background-color: #444;
+  color: #fff;
+  display: inline;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#winnerContainer #winner {
   display: inline;
 }
 
-#score-container p {
+#scoreContainer p {
   display: inline;
 }
