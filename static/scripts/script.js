@@ -24,11 +24,33 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // Add event handlers to all the cells
+  function addEventListenerToCells() {
+    const cells = document.querySelectorAll("td"); // Get all the cells
+    cells.forEach((cell) => {
+      cell.addEventListener("click", handleCellClick);
+    });
+  }
+
   //When player clicks the column/cell
   function handleCellClick(event) {
     const cell = event.target;
     const row = cell.getAttribute("data-row");
     const col = cell.getAttribute("data-col");
+
+    // Check if the topmost cell in the column is already filled
+    if (row === "0" && cell.textContent !== " ") {
+      // Make all the cells of the column non-clickable
+      for (let i = 0; i < 6; i++) {
+        const currentCell = document.querySelector(
+          `[data-row="${i}"][data-col="${col}"]`
+        );
+        if (currentCell) {
+          currentCell.removeEventListener("click", handleCellClick);
+        }
+      }
+      return;
+    }
 
     // Send the clicked cell information to the backend
     fetch(`/move?row=${row}&col=${col}`)
@@ -88,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         resetBoardButton.style.display = "none"; // Hiding the next round button while resetting board
         board.style.pointerEvents = "auto"; //After resetting the board if the board was nonclickable, it becomes clickable
         updateScores(data.player_score, data.ai_score);
+        addEventListenerToCells();
       });
   }
 
@@ -104,6 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
         startGameButton.style.display = "inline";
         board.style.pointerEvents = "auto"; //After resetting the board if the board was nonclickable, it becomes clickable
         updateScores(data.player_score, data.ai_score);
+        addEventListenerToCells();
       });
   }
 
@@ -118,6 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
         board.style.pointerEvents = "auto"; //After resetting the board if the board was nonclickable, it becomes clickable
         playAgainButton.style.display = "none";
         updateScores(data.player_score, data.ai_score);
+        addEventListenerToCells();
       });
   }
 
