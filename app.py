@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
-import random #Just for the demo of AI move. Will be removed after AI implementation
+from a_star import valid_move as valid_move_a_star;
+from mcts import valid_move as valid_move_mcts;
 
 app = Flask(__name__)
 
@@ -55,18 +56,9 @@ def check_winner():
 
 ######################################################
 # IMPORTANT FUNCTION(ai_move())
-# For now, this is just a simple implementation of AI
-# where it choses a vacant cell(cell without 'X' or 'O' already),
-# We are just using a random module(import random)
-# Therefore, for now, the AI only choses a random vacant cell
-# Later, when we implement an actual AI, we will change the code inside ai_move() function
-# If we need to make a separate class we will create a new python file and apply the class methods here
 ######################################################
 def ai_move():
-    # Implement your AI logic here
-    # For now, the AI makes a random valid move
-    valid_moves = [col for col in range(7) if board[0][col] == ' ']
-    return random.choice(valid_moves)
+    return valid_move_a_star(board)
 ######################################################
 ######################################################
 
@@ -121,8 +113,7 @@ def move():
         if board[row][ai_col] == ' ':
             board[row][ai_col] = 'O'
             break
-    
-    print(board)
+
     # Check for the winner after ai's move
     winner = check_winner()
     if winner:

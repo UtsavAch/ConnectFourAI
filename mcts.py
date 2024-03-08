@@ -13,4 +13,3 @@ def valid_move(board):
     print(random.choice(valid_moves))
     return random.choice(valid_moves)
     # This function gets board as an argument and returns the valid column
-    
