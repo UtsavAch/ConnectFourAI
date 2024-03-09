@@ -32,6 +32,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function getTopmostCellContent(column) {
+    // Get the topmost cell in the specified column
+    const topmostCell = document.querySelector(
+      `[data-col="${column}"][data-row="0"]`
+    );
+    // Return the content of the topmost cell
+    return topmostCell ? topmostCell.textContent : null;
+  }
+
   //When player clicks the column/cell
   function handleCellClick(event) {
     const cell = event.target;
@@ -39,7 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const col = cell.getAttribute("data-col");
 
     // Check if the topmost cell in the column is already filled
-    if (row === "0" && cell.textContent !== " ") {
+    if (
+      getTopmostCellContent(col) === "O" ||
+      getTopmostCellContent(col) === "X"
+    ) {
       // Make all the cells of the column non-clickable
       for (let i = 0; i < 6; i++) {
         const currentCell = document.querySelector(
