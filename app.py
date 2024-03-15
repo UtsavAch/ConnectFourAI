@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request
-from a_star import valid_move as valid_move_a_star;
-from mcts import valid_move as valid_move_mcts;
+from a_star import best_move as best_move_a_star;
+from mcts import best_move as best_move_mcts;
+from minimax import best_move as best_move_minimax;
 
 app = Flask(__name__)
 
@@ -58,7 +59,7 @@ def check_winner():
 # IMPORTANT FUNCTION(ai_move())
 ######################################################
 def ai_move():
-    return valid_move_a_star(board)
+    return best_move_a_star(board, "O")
 ######################################################
 ######################################################
 
@@ -90,12 +91,14 @@ def board_reset():
 def move():
     global current_player, player_score, ai_score
     col = int(request.args.get('col'))
-    
+
+# ////////////////////////////  
     # Player move
     for row in range(5, -1, -1):
         if board[row][col] == ' ':
             board[row][col] = current_player
             break
+# ///////////////////////////
     
     # Check for a winner after player's move
     winner = check_winner()
@@ -107,12 +110,14 @@ def move():
             winner_message = "X won the round"
         return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': winner_message})
 
+# ////////////////////////////
     # AI move
     ai_col = ai_move()
     for row in range(5, -1, -1):
         if board[row][ai_col] == ' ':
             board[row][ai_col] = 'O'
             break
+# ////////////////////////////
 
     # Check for the winner after ai's move
     winner = check_winner()

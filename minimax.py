@@ -123,8 +123,3 @@ def best_move(board,player):
     print(values)
     
     return max_val_index(values)
-
-
-
-
-    
