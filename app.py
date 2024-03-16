@@ -13,6 +13,7 @@ def initialize_board():
 board = initialize_board()
 current_player = 'X'
 # cells_occupied = 0 #To track how many boxes are occupied
+match_option = None
 
 # Initialize scores 
 player_one_score = 0
@@ -80,8 +81,10 @@ def ai_move(board, ai_type, player):
 # Getting button clicked information from backend whenever match option buttons are clicked
 @app.route("/button_clicked", methods=["POST"])
 def button_clicked():
+    global match_option
     button_name = request.json.get("buttonName")
     print(button_name)
+    match_option = button_name
     return jsonify({"buttonName": button_name})
 
 ######################################################
@@ -112,12 +115,22 @@ def board_reset():
 # Player one's and player two's moves
 @app.route("/move")
 def move():
-    global current_player, player_one_score, player_two_score
+    global current_player, player_one_score, player_two_score, match_option
     col = int(request.args.get('col'))
 
 # ////////////////////////////  
     # Player one move
-    player_move(board, col, "X")
+    match(match_option):
+        case("player_vs_astar"):
+            player_move(board, col, "X")
+        case ("player_vs_minimax"):
+            player_move(board, col, "X")
+        case ("player_vs_mcts"):
+            player_move(board, col, "X")
+        case ("astar_vs_mcts"):
+            ai_move(board, "a_star", "X")
+        case ("mcts_vs_minimax"):
+            ai_move(board, "mcts", "X")
 # ///////////////////////////
     
     # Check for a winner after player one's move
@@ -132,7 +145,17 @@ def move():
 
 # ////////////////////////////
     # Player two move
-    ai_move(board, "a_star", "O")
+    match(match_option):
+        case("player_vs_astar"):
+            ai_move(board, "a_star", "O")
+        case ("player_vs_minimax"):
+            ai_move(board, "minimax", "O")
+        case ("player_vs_mcts"):
+            ai_move(board, "mcts", "O")
+        case ("astar_vs_mcts"):
+            ai_move(board, "mcts", "O")
+        case ("mcts_vs_minimax"):
+            ai_move(board, "minimax", "O")
 # ////////////////////////////
 
     # Check for the winner after player two's move
