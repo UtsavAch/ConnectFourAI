@@ -15,8 +15,8 @@ current_player = 'X'
 # cells_occupied = 0 #To track how many boxes are occupied
 
 # Initialize scores 
-player_score = 0
-ai_score = 0
+player_one_score = 0
+player_two_score = 0
 
 #Function to check the winner
 #############################
@@ -70,26 +70,26 @@ def index():
 # Click "New game" button to see its function 
 @app.route("/reset_all")
 def reset():
-    global board, player_score, ai_score, current_player
+    global board, player_one_score, player_two_score, current_player
     board = initialize_board()
-    player_score = 0
-    ai_score = 0
+    player_one_score = 0
+    player_two_score = 0
     current_player = 'X'
-    return jsonify({'board': board, 'winner': None, 'player_score': player_score, 'ai_score': ai_score})
+    return jsonify({'board': board, 'winner': None, 'player_one_score': player_one_score, 'player_two_score': player_two_score})
 
 # Click "Next round" buttion to see its function
 @app.route("/reset_board")
 def board_reset():
-    global board, player_score, ai_score, current_player
+    global board, player_one_score, player_two_score, current_player
     board = initialize_board()
     current_player = 'X'
-    return jsonify({'board': board, 'winner': None, 'player_score': player_score, 'ai_score': ai_score})
+    return jsonify({'board': board, 'winner': None, 'player_one_score': player_one_score, 'player_two_score': player_two_score})
 
 ##################################
 # Player's and AI's moves
 @app.route("/move")
 def move():
-    global current_player, player_score, ai_score
+    global current_player, player_one_score, player_two_score
     col = int(request.args.get('col'))
 
 # ////////////////////////////  
@@ -103,12 +103,12 @@ def move():
     # Check for a winner after player's move
     winner = check_winner()
     if winner:
-        player_score += 1
-        if(player_score == 3):
+        player_one_score += 1
+        if(player_one_score == 3):
             winner_message = "X is the winner"
         else:
             winner_message = "X won the round"
-        return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': winner_message})
+        return jsonify({'board': board, 'winner': winner, 'player_one_score': player_one_score, 'player_two_score': player_two_score, 'winner_message': winner_message})
 
 # ////////////////////////////
     # AI move
@@ -122,23 +122,23 @@ def move():
     # Check for the winner after ai's move
     winner = check_winner()
     if winner:
-        ai_score += 1
-        if(ai_score == 3):
+        player_two_score += 1
+        if(player_two_score == 3):
             winner_message = "O is the winner"
         else:
             winner_message = "O won the round"
-        return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': winner_message})
+        return jsonify({'board': board, 'winner': winner, 'player_one_score': player_one_score, 'player_two_score': player_two_score, 'winner_message': winner_message})
 
     if winner == 'X':
-        player_score += 1
+        player_one_score += 1
         winner_message = 'X won the round'
     elif winner == 'O':
-        ai_score += 1
+        player_two_score += 1
         winner_message = 'O won the round'
     else:
         winner_message = None
         
-    return jsonify({'board': board, 'winner': winner, 'player_score': player_score, 'ai_score': ai_score, 'winner_message': winner_message})
+    return jsonify({'board': board, 'winner': winner, 'player_one_score': player_one_score, 'player_two_score': player_two_score, 'winner_message': winner_message})
 #######################################
 
 if __name__ == "__main__":

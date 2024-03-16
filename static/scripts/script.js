@@ -85,11 +85,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.winner_message) {
           displayWinnerMessage(
             data.winner_message,
-            data.player_score,
-            data.ai_score
+            data.player_one_score,
+            data.player_two_score
           );
         }
-        updateScores(data.player_score, data.ai_score);
+        updateScores(data.player_one_score, data.player_two_score);
       });
   }
 
@@ -108,9 +108,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function displayWinnerMessage(message, playerScore, aiScore) {
+  function displayWinnerMessage(message, playerOneScore, playerTwoScore) {
     board.style.pointerEvents = "none"; //If a player wins he cannot click on the board unless next round or play again
-    if (playerScore == 3 || aiScore == 3) {
+    if (playerOneScore == 3 || playerTwoScore == 3) {
       winnerDisplay.textContent = message;
       resetBoardButton.style.display = "none";
       playAgainButton.style.display = "inline";
@@ -120,9 +120,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function updateScores(playerScore, aiScore) {
-    playerOneScoreDisplay.textContent = `${playerScore}`;
-    playerTwoScoreDisplay.textContent = `${aiScore}`;
+  function updateScores(playerOneScore, playerTwoScore) {
+    playerOneScoreDisplay.textContent = `${playerOneScore}`;
+    playerTwoScoreDisplay.textContent = `${playerTwoScore}`;
   }
 
   function resetBoard() {
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
         winnerDisplay.textContent = ""; // Clear the winner display
         resetBoardButton.style.display = "none"; // Hiding the next round button while resetting board
         board.style.pointerEvents = "auto"; //After resetting the board if the board was nonclickable, it becomes clickable
-        updateScores(data.player_score, data.ai_score);
+        updateScores(data.player_one_score, data.player_two_score);
         addEventListenerToCells();
       });
   }
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
         resetAllButton.style.display = "none";
         startGameButton.style.display = "inline";
         board.style.pointerEvents = "auto"; //After resetting the board if the board was nonclickable, it becomes clickable
-        updateScores(data.player_score, data.ai_score);
+        updateScores(data.player_one_score, data.player_two_score);
         addEventListenerToCells();
       });
   }
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
         resetBoardButton.style.display = "none"; // Hiding the next round button while resetting all
         board.style.pointerEvents = "auto"; //After resetting the board if the board was nonclickable, it becomes clickable
         playAgainButton.style.display = "none";
-        updateScores(data.player_score, data.ai_score);
+        updateScores(data.player_one_score, data.player_two_score);
         addEventListenerToCells();
       });
   }
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((response) => response.json())
     .then((data) => {
       updateBoard(data);
-      updateScores(data.player_score, data.ai_score);
+      updateScores(data.player_one_score, data.player_two_score);
     });
 
   initializeBoard();
