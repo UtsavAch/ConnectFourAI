@@ -199,28 +199,45 @@ document.addEventListener("DOMContentLoaded", function () {
     playerTwoName.textContent = playerTwo + ": ";
   }
 
+  function sendButtonClickToBackend(buttonName) {
+    // Send the clicked button information to the backend
+    fetch("/button_clicked", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ buttonName: buttonName }),
+    }).then((response) => response.json());
+  }
+
   /////////////////////////////////////
   function playerVsAStarFn() {
+    sendButtonClickToBackend("player_vs_astar");
     optionButtonChangeDisplay("Player", "A*");
   }
 
   function playerVsMinimaxFn() {
+    sendButtonClickToBackend("player_vs_minimax");
     optionButtonChangeDisplay("Player", "Minimax");
   }
 
   function playerVsMctsFn() {
+    sendButtonClickToBackend("player_vs_mcts");
     optionButtonChangeDisplay("Player", "MCTS");
   }
 
   function playerVsPlayerFn() {
+    sendButtonClickToBackend("player_vs_player");
     optionButtonChangeDisplay("Player1", "Player2");
   }
 
   function aStarVsMctsFn() {
+    sendButtonClickToBackend("astar_vs_mcts");
     optionButtonChangeDisplay("A*", "MCTS");
   }
 
   function mctsVsMinimaxFn() {
+    sendButtonClickToBackend("mcts_vs_minimax");
     optionButtonChangeDisplay("MCTS", "Minimax");
   }
   /////////////////////////////////////

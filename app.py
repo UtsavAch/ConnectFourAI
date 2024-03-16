@@ -56,11 +56,34 @@ def check_winner():
     return None
 
 ######################################################
-# IMPORTANT FUNCTION(ai_move())
+# IMPORTANT FUNCTIONS(Player and AI moves)
 ######################################################
-def ai_move():
-    return best_move_a_star(board, "O")
+def player_move(board, col, player):
+    for row in range(5, -1, -1):
+        if board[row][col] == ' ':
+            board[row][col] = player
+            break
+
+def ai_move(board, ai_type, player):
+    if(ai_type == "a_star"):
+        col = best_move_a_star(board, player)
+    if(ai_type == "mcts"):
+        col = best_move_mcts(board, player)
+    if(ai_type == "minimax"):
+        col = best_move_minimax(board, player)
+    for row in range(5, -1, -1):
+        if board[row][col] == ' ':
+            board[row][col] = player
+            break
+
 ######################################################
+# Getting button clicked information from backend whenever match option buttons are clicked
+@app.route("/button_clicked", methods=["POST"])
+def button_clicked():
+    button_name = request.json.get("buttonName")
+    print(button_name)
+    return jsonify({"buttonName": button_name})
+
 ######################################################
 
 @app.route("/")
@@ -86,21 +109,18 @@ def board_reset():
     return jsonify({'board': board, 'winner': None, 'player_one_score': player_one_score, 'player_two_score': player_two_score})
 
 ##################################
-# Player's and AI's moves
+# Player one's and player two's moves
 @app.route("/move")
 def move():
     global current_player, player_one_score, player_two_score
     col = int(request.args.get('col'))
 
 # ////////////////////////////  
-    # Player move
-    for row in range(5, -1, -1):
-        if board[row][col] == ' ':
-            board[row][col] = current_player
-            break
+    # Player one move
+    player_move(board, col, "X")
 # ///////////////////////////
     
-    # Check for a winner after player's move
+    # Check for a winner after player one's move
     winner = check_winner()
     if winner:
         player_one_score += 1
@@ -111,15 +131,11 @@ def move():
         return jsonify({'board': board, 'winner': winner, 'player_one_score': player_one_score, 'player_two_score': player_two_score, 'winner_message': winner_message})
 
 # ////////////////////////////
-    # AI move
-    ai_col = ai_move()
-    for row in range(5, -1, -1):
-        if board[row][ai_col] == ' ':
-            board[row][ai_col] = 'O'
-            break
+    # Player two move
+    ai_move(board, "a_star", "O")
 # ////////////////////////////
 
-    # Check for the winner after ai's move
+    # Check for the winner after player two's move
     winner = check_winner()
     if winner:
         player_two_score += 1
