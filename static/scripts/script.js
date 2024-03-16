@@ -3,9 +3,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const main = document.getElementById("main");
   const board = document.getElementById("board");
   const winnerDisplay = document.getElementById("winner");
-  const playerScoreDisplay = document.getElementById("playerScore");
-  const aiScoreDisplay = document.getElementById("aiScore");
+  const playerOneScoreDisplay = document.getElementById("playerOneScore");
+  const playerTwoScoreDisplay = document.getElementById("playerTwoScore");
   const matchTitle = document.getElementById("matchTitle");
+  const playerOneName = document.getElementById("playerOneName");
+  const playerTwoName = document.getElementById("playerTwoName");
 
   // BUTTONS
   const startGameButton = document.getElementById("startGameButton");
@@ -119,8 +121,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateScores(playerScore, aiScore) {
-    playerScoreDisplay.textContent = `Player Score: ${playerScore}`;
-    aiScoreDisplay.textContent = `AI Score: ${aiScore}`;
+    playerOneScoreDisplay.textContent = `${playerScore}`;
+    playerTwoScoreDisplay.textContent = `${aiScore}`;
   }
 
   function resetBoard() {
@@ -186,41 +188,40 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /////////////////////////////////////
-  function optionButtonChangeDisplay() {
+  //OPTION BUTTONS
+  /////////////////////////////////////
+  function optionButtonChangeDisplay(playerOne, playerTwo) {
     main.style.display = "block"; //Showing all the contents from main
     matchOptions.style.display = "none"; //Hide all the option buttons
     resetAllButton.style.display = "inline"; //Show the reset button (exit button)
+    matchTitle.textContent = playerOne + " vs " + playerTwo;
+    playerOneName.textContent = playerOne + ": ";
+    playerTwoName.textContent = playerTwo + ": ";
   }
 
   /////////////////////////////////////
   function playerVsAStarFn() {
-    optionButtonChangeDisplay();
-    matchTitle.textContent = "Player vs A*";
+    optionButtonChangeDisplay("Player", "A*");
   }
 
   function playerVsMinimaxFn() {
-    optionButtonChangeDisplay();
-    matchTitle.textContent = "Player vs Minimax";
+    optionButtonChangeDisplay("Player", "Minimax");
   }
 
   function playerVsMctsFn() {
-    optionButtonChangeDisplay();
-    matchTitle.textContent = "Player vs MCTS";
+    optionButtonChangeDisplay("Player", "MCTS");
   }
 
   function playerVsPlayerFn() {
-    optionButtonChangeDisplay();
-    matchTitle.textContent = "Player1 vs Player2";
+    optionButtonChangeDisplay("Player1", "Player2");
   }
 
   function aStarVsMctsFn() {
-    optionButtonChangeDisplay();
-    matchTitle.textContent = "A* vs MCTS";
+    optionButtonChangeDisplay("A*", "MCTS");
   }
 
   function mctsVsMinimaxFn() {
-    optionButtonChangeDisplay();
-    matchTitle.textContent = "MCTS vs Minimax";
+    optionButtonChangeDisplay("MCTS", "Minimax");
   }
   /////////////////////////////////////
 

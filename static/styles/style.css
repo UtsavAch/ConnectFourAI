@@ -14,6 +14,10 @@ button {
   display: inline;
 }
 
+#resetAllButton {
+  margin-top: 10px;
+}
+
 #boardContainer {
   margin: 20px;
 }
@@ -46,8 +50,14 @@ td {
   display: inline;
 }
 
+#scoreContainer div {
+  display: inline;
+  margin: 10px 10px;
+}
+
 #scoreContainer p {
   display: inline;
+  font-size: 18px;
 }
 
 #matchTitle {
