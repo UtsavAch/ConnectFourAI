@@ -1,15 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
+  //IMPORTANT ELEMENTS
   const main = document.getElementById("main");
   const board = document.getElementById("board");
   const winnerDisplay = document.getElementById("winner");
   const playerScoreDisplay = document.getElementById("playerScore");
   const aiScoreDisplay = document.getElementById("aiScore");
+  const matchTitle = document.getElementById("matchTitle");
 
   // BUTTONS
   const startGameButton = document.getElementById("startGameButton");
   const resetAllButton = document.getElementById("resetAllButton");
   const resetBoardButton = document.getElementById("resetBoardButton");
   const playAgainButton = document.getElementById("playAgainButton");
+
+  //OPTION BUTTONS
+  const matchOptions = document.getElementById("matchOptions");
+  const playerVsAStar = document.getElementById("playerVsAStar");
+  const playerVsMinimax = document.getElementById("playerVsMinimax");
+  const playerVsMcts = document.getElementById("playerVsMcts");
+  const playerVsPlayer = document.getElementById("playerVsPlayer");
+  const aStarVsMcts = document.getElementById("aStarVsMcts");
+  const mctsVsMinimax = document.getElementById("mctsVsMinimax");
 
   // Initialize the board
   function initializeBoard() {
@@ -169,15 +180,61 @@ document.addEventListener("DOMContentLoaded", function () {
   initializeBoard();
 
   function startGame() {
-    main.style.display = "block"; //Showing all the contents from main
-    resetAllButton.style.display = "inline";
+    matchOptions.style.display = "flex";
     startGameButton.style.display = "none";
     playAgainButton.style.display = "none";
   }
+
+  /////////////////////////////////////
+  function optionButtonChangeDisplay() {
+    main.style.display = "block"; //Showing all the contents from main
+    matchOptions.style.display = "none"; //Hide all the option buttons
+    resetAllButton.style.display = "inline"; //Show the reset button (exit button)
+  }
+
+  /////////////////////////////////////
+  function playerVsAStarFn() {
+    optionButtonChangeDisplay();
+    matchTitle.textContent = "Player vs A*";
+  }
+
+  function playerVsMinimaxFn() {
+    optionButtonChangeDisplay();
+    matchTitle.textContent = "Player vs Minimax";
+  }
+
+  function playerVsMctsFn() {
+    optionButtonChangeDisplay();
+    matchTitle.textContent = "Player vs MCTS";
+  }
+
+  function playerVsPlayerFn() {
+    optionButtonChangeDisplay();
+    matchTitle.textContent = "Player1 vs Player2";
+  }
+
+  function aStarVsMctsFn() {
+    optionButtonChangeDisplay();
+    matchTitle.textContent = "A* vs MCTS";
+  }
+
+  function mctsVsMinimaxFn() {
+    optionButtonChangeDisplay();
+    matchTitle.textContent = "MCTS vs Minimax";
+  }
+  /////////////////////////////////////
 
   // Attach a click event listener to the reset buttons
   resetAllButton.addEventListener("click", resetAll);
   resetBoardButton.addEventListener("click", resetBoard);
   startGameButton.addEventListener("click", startGame);
   playAgainButton.addEventListener("click", playAgain);
+
+  // Attach a click event listener to the game option buttons
+  playerVsAStar.addEventListener("click", playerVsAStarFn);
+  playerVsMinimax.addEventListener("click", playerVsMinimaxFn);
+  playerVsMcts.addEventListener("click", playerVsMctsFn);
+  playerVsPlayer.addEventListener("click", playerVsPlayerFn);
+  aStarVsMcts.addEventListener("click", aStarVsMctsFn);
+  mctsVsMinimax.addEventListener("click", mctsVsMinimaxFn);
 });

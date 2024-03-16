@@ -49,3 +49,19 @@ td {
 #scoreContainer p {
   display: inline;
 }
+
+#matchTitle {
+  font-size: 20px;
+}
+
+#matchOptions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#matchOptions button {
+  width: 200px;
+  margin: 5px 0px;
+}
