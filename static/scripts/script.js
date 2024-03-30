@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const playerVsAStar = document.getElementById("playerVsAStar");
   const playerVsMinimax = document.getElementById("playerVsMinimax");
   const playerVsMcts = document.getElementById("playerVsMcts");
-  const playerVsPlayer = document.getElementById("playerVsPlayer");
+  const minimaxVsAStar = document.getElementById("minimaxVsAStar");
   const aStarVsMcts = document.getElementById("aStarVsMcts");
   const mctsVsMinimax = document.getElementById("mctsVsMinimax");
 
@@ -226,9 +226,9 @@ document.addEventListener("DOMContentLoaded", function () {
     optionButtonChangeDisplay("Player", "MCTS");
   }
 
-  function playerVsPlayerFn() {
-    sendButtonClickToBackend("player_vs_player");
-    optionButtonChangeDisplay("Player1", "Player2");
+  function minimaxVsAStarFn() {
+    sendButtonClickToBackend("minimax_vs_astar");
+    optionButtonChangeDisplay("Minimax", "A*");
   }
 
   function aStarVsMctsFn() {
@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", function () {
   playerVsAStar.addEventListener("click", playerVsAStarFn);
   playerVsMinimax.addEventListener("click", playerVsMinimaxFn);
   playerVsMcts.addEventListener("click", playerVsMctsFn);
-  playerVsPlayer.addEventListener("click", playerVsPlayerFn);
+  minimaxVsAStar.addEventListener("click", minimaxVsAStarFn);
   aStarVsMcts.addEventListener("click", aStarVsMctsFn);
   mctsVsMinimax.addEventListener("click", mctsVsMinimaxFn);
 });

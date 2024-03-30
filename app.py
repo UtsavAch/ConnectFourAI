@@ -91,6 +91,8 @@ def move():
             player_move(board, col, "X")
         case ("player_vs_mcts"):
             player_move(board, col, "X")
+        case("minimax_vs_astar"):
+            ai_move(board, "minimax", "X")
         case ("astar_vs_mcts"):
             ai_move(board, "a_star", "X")
         case ("mcts_vs_minimax"):
@@ -118,6 +120,8 @@ def move():
             ai_move(board, "minimax", "O")
         case ("player_vs_mcts"):
             ai_move(board, "mcts", "O")
+        case("minimax_vs_astar"):
+            ai_move(board, "a_star", "O")
         case ("astar_vs_mcts"):
             ai_move(board, "mcts", "O")
         case ("mcts_vs_minimax"):
