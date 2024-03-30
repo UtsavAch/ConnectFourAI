@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify, request
+from check_winner import check_winner
 from a_star import best_move as best_move_a_star;
 from mcts import best_move as best_move_mcts;
 from minimax import best_move as best_move_minimax;
@@ -18,43 +19,6 @@ match_option = None
 # Initialize scores 
 player_one_score = 0
 player_two_score = 0
-
-#Function to check the winner
-#############################
-def check_winner():
-    # Check horizontally
-    for row in range(6):
-        for col in range(4):
-            if (
-                board[row][col] == board[row][col + 1] == board[row][col + 2] == board[row][col + 3]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
-    # Check vertically
-    for row in range(3):
-        for col in range(7):
-            if (
-                board[row][col] == board[row + 1][col] == board[row + 2][col] == board[row + 3][col]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
-    # Check diagonally (from bottom-left to top-right)
-    for row in range(3, 6):
-        for col in range(4):
-            if (
-                board[row][col] == board[row - 1][col + 1] == board[row - 2][col + 2] == board[row - 3][col + 3]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
-    # Check diagonally (from top-left to bottom-right)
-    for row in range(3):
-        for col in range(4):
-            if (
-                board[row][col] == board[row + 1][col + 1] == board[row + 2][col + 2] == board[row + 3][col + 3]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
-    return None
 
 ######################################################
 # IMPORTANT FUNCTIONS(Player and AI moves)
@@ -115,7 +79,7 @@ def board_reset():
 # Player one's and player two's moves
 @app.route("/move")
 def move():
-    global current_player, player_one_score, player_two_score, match_option
+    global board, current_player, player_one_score, player_two_score, match_option
     col = int(request.args.get('col'))
 
 # ////////////////////////////  
@@ -134,8 +98,10 @@ def move():
 # ///////////////////////////
     
     # Check for a winner after player one's move
-    winner = check_winner()
-    if winner:
+    winner = check_winner(board)
+    if(winner == "tie"):
+        winner_message = "This is a draw"
+    elif winner == "X":
         player_one_score += 1
         if(player_one_score == 3):
             winner_message = "X is the winner"
@@ -159,8 +125,10 @@ def move():
 # ////////////////////////////
 
     # Check for the winner after player two's move
-    winner = check_winner()
-    if winner:
+    winner = check_winner(board)
+    if(winner == 'tie'):
+        winner_message = "This is a draw"
+    elif winner == 'O':
         player_two_score += 1
         if(player_two_score == 3):
             winner_message = "O is the winner"
@@ -174,6 +142,8 @@ def move():
     elif winner == 'O':
         player_two_score += 1
         winner_message = 'O won the round'
+    elif winner == 'tie':
+        winner_message = 'It is a draw'
     else:
         winner_message = None
         
