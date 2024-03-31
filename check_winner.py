@@ -1,46 +1,47 @@
-#Function to check the winner
-# Takes argument board
-# Returns
-# 'X' if X is the winner
-# 'O' if O is the winner
-# 'tie' if all cells are filled and noone is the winner
-# None if noone is winner
-#############################
 def check_winner(board):
+    """
+    Checks the winner of the Connect Four game represented by the provided board.
+
+    Args:
+    - board (list of lists): The game board represented as a 2D list of characters.
+                             Each cell may contain 'X', 'O', or ' ' (empty).
+
+    Returns:
+    - 'X' if player 'X' is the winner.
+    - 'O' if player 'O' is the winner.
+    - 'tie' if all cells are filled and no player wins.
+    - None if no player has won yet.
+
+    The function iterates through all rows, columns, and diagonals to check for four consecutive
+    matching symbols ('X' or 'O'). It also checks for a tie when all cells are filled without a winner.
+    """
     # Check horizontally
-    for row in range(6):
-        for col in range(4):
-            if (
-                board[row][col] == board[row][col + 1] == board[row][col + 2] == board[row][col + 3]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
+    for r in range(6):
+        for c in range(4):
+            if board[r][c] == board[r][c + 1] == board[r][c + 2] == board[r][c + 3] != ' ':
+                return board[r][c]
+
     # Check vertically
-    for row in range(3):
-        for col in range(7):
-            if (
-                board[row][col] == board[row + 1][col] == board[row + 2][col] == board[row + 3][col]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
+    for r in range(3):
+        for c in range(7):
+            if board[r][c] == board[r + 1][c] == board[r + 2][c] == board[r + 3][c] != ' ':
+                return board[r][c]
+
     # Check diagonally (from bottom-left to top-right)
-    for row in range(3, 6):
-        for col in range(4):
-            if (
-                board[row][col] == board[row - 1][col + 1] == board[row - 2][col + 2] == board[row - 3][col + 3]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
+    for r in range(3, 6):
+        for c in range(4):
+            if board[r][c] == board[r - 1][c + 1] == board[r - 2][c + 2] == board[r - 3][c + 3] != ' ':
+                return board[r][c]
+
     # Check diagonally (from top-left to bottom-right)
-    for row in range(3):
-        for col in range(4):
-            if (
-                board[row][col] == board[row + 1][col + 1] == board[row + 2][col + 2] == board[row + 3][col + 3]
-                and board[row][col] != ' '
-            ):
-                return board[row][col]
+    for r in range(3):
+        for c in range(4):
+            if board[r][c] == board[r + 1][c + 1] == board[r + 2][c + 2] == board[r + 3][c + 3] != ' ':
+                return board[r][c]
+
     # Check for tie
-    if all(board[row][col] != ' ' for row in range(6) for col in range(7)):
+    if all(board[r][c] != ' ' for r in range(6) for c in range(7)):
         return "tie"
-    # When noone is the winner
+
+    # No winner yet
     return None
