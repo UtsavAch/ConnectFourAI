@@ -1,124 +1,197 @@
+import math
 from check_winner import check_winner
 
-# This function remains unchanged
-def check_token(board, x, y, x_incr, y_incr, player):
-    if (x + 4 * x_incr >= len(board[0]) or x + 4 * x_incr < 0 or y + 4 * y_incr >= len(board) or y + 4 * y_incr < 0):
-        return 0
-    num_player = 0
-    num_not_player = 0
-    for i in range(4):
-        if (board[y][x] != player and board[y][x] != ' '):
-            num_not_player += 1
-        elif (board[y][x] == player):
-            num_player += 1
-        x += x_incr
-        y += y_incr
+# Constants
+WIN_SCORE = 100000
+DEPTH = 5  # Increased depth for deeper search
+BLOCKING_SCORE = 10000  # Score for blocking opponent's winning moves
 
-    if ((num_player > 0 and num_not_player > 0) or (num_player == 0 and num_not_player == 0)):
-        return 0
-    elif (num_not_player > 0):
-        match (num_not_player):
-            case (1):
-                return -1
-            case (2):
-                return -10
-            case (3):
-                return -50
-            case (4):
-                return -512
-    else:
-        match (num_player):
-            case (1):
-                return 1
-            case (2):
-                return 10
-            case (3):
-                return 50
-            case (4):
-                return 512
+def evaluate_position(board, player):
+    """
+    Evaluate the score of a given board position for a player.
 
+    Parameters:
+    - board (list): The game board.
+    - player (str): The player ('X' or 'O') for whom to evaluate the position.
 
-# This function remains unchanged
-def heuristic_1(board, player):
-    total_value = 0
+    Returns:
+    - score (int): The score representing the evaluation of the position for the player.
+    """
+    score = 0
+    opponent = get_opponent(player)
+
+    # Check horizontal
     for row in range(len(board)):
-        for col in range(len(board[0])):
-            total_value += check_token(board, col, row, 1, 0, player)
-            total_value += check_token(board, col, row, 0, 1, player)
-            total_value += check_token(board, col, row, 1, 1, player)
-            total_value += check_token(board, col, row, -1, 1, player)
+        for col in range(len(board[0]) - 3):
+            score += score_window(board[row][col:col+4], player, opponent)
 
-    return total_value
+    # Check vertical
+    for col in range(len(board[0])):
+        for row in range(len(board) - 3):
+            window = [board[row+i][col] for i in range(4)]
+            score += score_window(window, player, opponent)
 
+    # Check diagonal (down-right)
+    for row in range(len(board) - 3):
+        for col in range(len(board[0]) - 3):
+            window = [board[row+i][col+i] for i in range(4)]
+            score += score_window(window, player, opponent)
 
-# This function remains unchanged
-def make_temp_move(board_temp, x, player):
-    y = len(board_temp) - 1
-    while (board_temp[y][x] != ' ' and y >= 0):
-        y -= 1
-    if (y >= 0):
-        board_temp[y][x] = player
+    # Check diagonal (up-right)
+    for row in range(3, len(board)):
+        for col in range(len(board[0]) - 3):
+            window = [board[row-i][col+i] for i in range(4)]
+            score += score_window(window, player, opponent)
 
-    return board_temp
+    return score
 
+def score_window(window, player, opponent):
+    """
+    Calculate the score for a window of 4 tokens.
 
-# This function remains unchanged
-def max_val_index(values):
-    max_val = values[0]
-    index = 0
-    for i in range(1, len(values)):
-        if (values[i] > max_val):
-            max_val = values[i]
-            index = i
+    Parameters:
+    - window (list): The window of 4 tokens to evaluate.
+    - player (str): The player ('X' or 'O') for whom to calculate the score.
+    - opponent (str): The opponent player ('X' or 'O').
 
-    return index
+    Returns:
+    - score (int): The score for the given window.
+    """
+    score = 0
+    if window.count(player) == 4:
+        score += WIN_SCORE
+    elif window.count(player) == 3 and window.count(' ') == 1:
+        score += 100
+    elif window.count(player) == 2 and window.count(' ') == 2:
+        score += 10
+    if window.count(opponent) == 3 and window.count(' ') == 1:
+        if window.count(player) == 0:
+            score -= BLOCKING_SCORE  # Penalize opponent's potential winning moves
+        else:
+            score += WIN_SCORE  # Prioritize winning over blocking opponent's winning move
+    return score
 
+def minimax(board, depth, maximizing_player, player, alpha, beta):
+    """
+    Perform minimax search with alpha-beta pruning.
 
-# This function is the minimax algorithm
-def minimax(board, depth, maximizing_player, player):
+    Parameters:
+    - board (list): The game board.
+    - depth (int): The current depth of the search.
+    - maximizing_player (bool): Indicates whether the player is maximizing or minimizing.
+    - player (str): The current player ('X' or 'O').
+    - alpha (float): The alpha value for alpha-beta pruning.
+    - beta (float): The beta value for alpha-beta pruning.
+
+    Returns:
+    - eval (int): The evaluation score of the board position.
+    """
     if depth == 0 or game_over(board):
-        return heuristic_1(board, player)
+        return evaluate_position(board, player)
 
     if maximizing_player:
-        max_eval = float('-inf')
+        max_eval = -math.inf
         for col in range(len(board[0])):
             if is_valid_move(board, col):
-                temp_board = make_temp_move([row[:] for row in board], col, player)
-                eval = minimax(temp_board, depth - 1, False, player)
+                row = get_next_open_row(board, col)
+                temp_board = [row[:] for row in board]
+                temp_board[row][col] = player
+                eval = minimax(temp_board, depth - 1, False, player, alpha, beta)
                 max_eval = max(max_eval, eval)
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
         return max_eval
     else:
-        min_eval = float('inf')
+        min_eval = math.inf
         for col in range(len(board[0])):
             if is_valid_move(board, col):
-                temp_board = make_temp_move([row[:] for row in board], col, get_opponent(player))
-                eval = minimax(temp_board, depth - 1, True, player)
+                row = get_next_open_row(board, col)
+                temp_board = [row[:] for row in board]
+                temp_board[row][col] = get_opponent(player)
+                eval = minimax(temp_board, depth - 1, True, player, alpha, beta)
                 min_eval = min(min_eval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
         return min_eval
 
-
-# This function remains unchanged
 def is_valid_move(board, col):
+    """
+    Check if a move is valid in a given column.
+
+    Parameters:
+    - board (list): The game board.
+    - col (int): The column index to check.
+
+    Returns:
+    - valid (bool): True if the move is valid, False otherwise.
+    """
     return board[0][col] == ' '
 
+def get_next_open_row(board, col):
+    """
+    Get the row where a token would fall in a given column.
 
-# This function remains unchanged
+    Parameters:
+    - board (list): The game board.
+    - col (int): The column index.
+
+    Returns:
+    - row (int): The row index where the token would fall.
+    """
+    for row in range(len(board)-1, -1, -1):
+        if board[row][col] == ' ':
+            return row
+
 def game_over(board):
+    """
+    Check if the game is over.
+
+    Parameters:
+    - board (list): The game board.
+
+    Returns:
+    - over (bool): True if the game is over, False otherwise.
+    """
     return check_winner(board) is not None
 
-
-# This function remains unchanged
 def get_opponent(player):
+    """
+    Get the opponent player.
+
+    Parameters:
+    - player (str): The current player ('X' or 'O').
+
+    Returns:
+    - opponent (str): The opponent player ('X' or 'O').
+    """
     return 'O' if player == 'X' else 'X'
 
-
-# This function remains unchanged
 def best_move(board, player):
-    depth = 4  # Define the depth here
-    values = []
+    """
+    Find the best move using minimax algorithm with alpha-beta pruning.
+
+    Parameters:
+    - board (list): The game board.
+    - player (str): The current player ('X' or 'O').
+
+    Returns:
+    - best_col (int): The column index of the best move.
+    """
+    best_score = -math.inf
+    best_col = None
+    alpha = -math.inf
+    beta = math.inf
+
     for col in range(len(board[0])):
         if is_valid_move(board, col):
-            board_cp = [row[:] for row in board]
-            board_cp = make_temp_move(board_cp, col, player)
-            values.append(minimax(board_cp, depth - 1, False, player))
-    return max_val_index(values)
+            row = get_next_open_row(board, col)
+            temp_board = [row[:] for row in board]
+            temp_board[row][col] = player
+            score = minimax(temp_board, DEPTH - 1, False, player, alpha, beta)
+            if score > best_score:
+                best_score = score
+                best_col = col
+            alpha = max(alpha, best_score)
+    return best_col
