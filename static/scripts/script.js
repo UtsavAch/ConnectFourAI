@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const matchTitle = document.getElementById("matchTitle");
   const playerOneName = document.getElementById("playerOneName");
   const playerTwoName = document.getElementById("playerTwoName");
+  const noteMcts = document.getElementById("noteMcts");
 
   // BUTTONS
   const startGameButton = document.getElementById("startGameButton");
@@ -150,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
         main.style.display = "none"; //Hiding all the contents from main
         resetAllButton.style.display = "none";
         startGameButton.style.display = "inline";
+        noteMcts.style.display = "none";
         board.style.pointerEvents = "auto"; //After resetting the board if the board was nonclickable, it becomes clickable
         updateScores(data.player_one_score, data.player_two_score);
         addEventListenerToCells();
@@ -224,6 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function playerVsMctsFn() {
     sendButtonClickToBackend("player_vs_mcts");
     optionButtonChangeDisplay("Player", "MCTS");
+    noteMcts.style.display = "block";
   }
 
   function minimaxVsAStarFn() {
@@ -234,11 +237,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function aStarVsMctsFn() {
     sendButtonClickToBackend("astar_vs_mcts");
     optionButtonChangeDisplay("A*", "MCTS");
+    noteMcts.style.display = "block";
   }
 
   function mctsVsMinimaxFn() {
     sendButtonClickToBackend("mcts_vs_minimax");
     optionButtonChangeDisplay("MCTS", "Minimax");
+    noteMcts.style.display = "block";
   }
   /////////////////////////////////////
 

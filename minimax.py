@@ -61,9 +61,9 @@ def score_window(window, player, opponent):
     if window.count(player) == 4:
         score += WIN_SCORE
     elif window.count(player) == 3 and window.count(' ') == 1:
-        score += 100
+        score += 1000
     elif window.count(player) == 2 and window.count(' ') == 2:
-        score += 10
+        score += 100
     if window.count(opponent) == 3 and window.count(' ') == 1:
         if window.count(player) == 0:
             score -= BLOCKING_SCORE  # Penalize opponent's potential winning moves
@@ -180,9 +180,9 @@ def best_move(board, player):
     - best_col (int): The column index of the best move.
     """
     best_score = -math.inf
-    best_col = None
     alpha = -math.inf
     beta = math.inf
+    max_score_columns = []  # Store columns with the highest score
 
     for col in range(len(board[0])):
         if is_valid_move(board, col):
@@ -190,8 +190,27 @@ def best_move(board, player):
             temp_board = [row[:] for row in board]
             temp_board[row][col] = player
             score = minimax(temp_board, DEPTH - 1, False, player, alpha, beta)
+            print(col, score)
             if score > best_score:
                 best_score = score
-                best_col = col
+                max_score_columns = [col]  # Reset max_score_columns
+            elif score == best_score:
+                max_score_columns.append(col)  # Add column to max_score_columns
             alpha = max(alpha, best_score)
-    return best_col
+    # print(max_score_columns) #List of columns with maximum scores
+
+    # If there are multiple columns with the same highest score
+    # Checks if opponent is going to win in the next move and tries to block it
+    # Chooses the best column among those highest score columns 
+    if len(max_score_columns) > 1:
+        # Check if there's a move that blocks opponent's winning move
+        for col in max_score_columns:
+            row = get_next_open_row(board, col)
+            temp_board = [row[:] for row in board]
+            temp_board[row][col] = get_opponent(player)
+            if game_over(temp_board):
+                print("Opponent was about to win!")
+                print(col)
+                return col  # Block opponent's winning move
+
+    return max_score_columns[0] if max_score_columns else None
