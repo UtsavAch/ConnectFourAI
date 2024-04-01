@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const playerOneName = document.getElementById("playerOneName");
   const playerTwoName = document.getElementById("playerTwoName");
   const noteMcts = document.getElementById("noteMcts");
+  const noteFullCol = document.getElementById("noteFullCol");
 
   // BUTTONS
   const startGameButton = document.getElementById("startGameButton");
@@ -199,6 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
     matchTitle.textContent = playerOne + " vs " + playerTwo;
     playerOneName.textContent = playerOne + ": ";
     playerTwoName.textContent = playerTwo + ": ";
+    noteFullCol.style.display = "block";
   }
 
   function sendButtonClickToBackend(buttonName) {

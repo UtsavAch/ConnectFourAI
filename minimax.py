@@ -197,7 +197,8 @@ def best_move(board, player):
             elif score == best_score:
                 max_score_columns.append(col)  # Add column to max_score_columns
             alpha = max(alpha, best_score)
-    # print(max_score_columns) #List of columns with maximum scores
+    print("These are the columns with highest scores")
+    print(max_score_columns) #List of columns with maximum scores
 
     # If there are multiple columns with the same highest score
     # Checks if opponent is going to win in the next move and tries to block it

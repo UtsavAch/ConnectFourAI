@@ -209,7 +209,7 @@ def best_move (state, _):
         if(time.time()-start_time>timeout):
             break
     
-    max=0
+    max=-1
     max_child=None
     for child in current_board.root.childs:
         value=child.n_victories/child.n_visits
@@ -232,7 +232,7 @@ def best_move (state, _):
 
 
 
-# print(mcts_move(test))
+# print(best_move(test))
 
 
 
