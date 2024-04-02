@@ -201,8 +201,7 @@ def best_move(board, player):
     print(max_score_columns) #List of columns with maximum scores
 
     # If there are multiple columns with the same highest score
-    # Checks if opponent is going to win in the next move and tries to block it
-    # Chooses the best column among those highest score columns 
+    # Check if opponent is about to win in the next move and try to block it
     if len(max_score_columns) > 1:
         # Check if there's a move that blocks opponent's winning move
         for col in max_score_columns:
