@@ -3,6 +3,9 @@ import math
 import copy
 import random
 
+
+# class node is going to be the base for the mcts, since we neeed statistics tree, the nodes are going to represent the state of the game 
+#as well as its structure meaning the child nodes of an node are the possible plays from said node 
 class Node:
     def __init__(self,state,father_node):
         self.state=state
@@ -31,7 +34,7 @@ class Tree:
         self.root=Node(state,None)
 
 
-
+#recursive functions to find the lefs of a specific node in a tree or the entire tree
     def find_leaf(self,node,leafs):
         if(node.childs==[]):
             leafs.extend([node])
@@ -48,21 +51,14 @@ class Tree:
         return leafs
         
     
-
+# this function recives the entire tree and chooses and leaf node to exapand
+# it chooses the node to expand having the ucb1 formula into consederation
+# we did alter it in comparation to the given in class, since it was not giving the expected results
+# after some debbuging we came to the conclusion that this formula suits our algorithm better  
 def select_node_to_expand(tree):
     not_expanded_nodes=tree.find_leafs()
     ucb1_best=-float("inf")
     node_to_expand=None
-    #debug code
-    # dif_amount_visits=[]
-    # for node in not_expanded_nodes:
-    #     if (node!= tree.root and [node.father_node.n_visits,1.41*math.sqrt(2*node.n_visits/math.log(node.father_node.n_visits)),node.n_visits] not in dif_amount_visits):
-    #         print(f"Numero de vezes que o pai foi visitado: {node.father_node.n_visits} UCB1 exploration: {1.41*math.sqrt(2*node.n_visits/math.log(node.father_node.n_visits))} Numero de visitas: {node.n_visits}")
-    #         dif_amount_visits.append([node.father_node.n_visits,1.41*math.sqrt(2*node.n_visits/math.log(node.father_node.n_visits)),node.n_visits])
-    #         if(node.n_visits==200):
-    #             print(node)
-    
-    # #---------
     for node in not_expanded_nodes:
         if (node==tree.root):
             return node#divisions by 0 only happen when the only leaf at the moment is the root (this is because in the first selection none simulation has occured, however in the following selections every leafs(expanded node) will be simulated as well as visited)
@@ -71,8 +67,8 @@ def select_node_to_expand(tree):
             if(ucb1>ucb1_best):
                 node_to_expand=node
                 ucb1_best=ucb1
-        elif(check_winner(node.state)==-1):
-            ucb1=node.n_victories/node.n_visits+ 1.41*math.sqrt(2*node.n_visits/math.log(node.father_node.n_visits)) 
+        elif(check_winner(node.state)==-1): # we don't want terminal nodes being expanded since that woudn't make sense and only waist computational power to do so
+            ucb1=node.n_victories/node.n_visits+ 1.41*math.sqrt(2*node.n_visits/math.log(node.father_node.n_visits)) # changed so that the exploration part actualy gives a bigger number to nodes that were explored less times
             if(ucb1>ucb1_best):
                 node_to_expand=node
                 ucb1_best=ucb1
@@ -94,6 +90,9 @@ def make_move(state, col,player):
     state[count][col]=player
     return 0
 
+
+#this function works by creating a node to each possible AI play,then it choses an random player for the human player 
+#so that the state of the node that is appended is always an board in which the next player is the IA 
 def expand_node(node):
     #first we have expand the node with the possible plays that the AI can do from the given state
     for i in range (7):
@@ -105,7 +104,7 @@ def expand_node(node):
                     break
             node.childs.append(Node(new_state,node))
 
-
+#this function checks if an specif part of the board has 4 X's or O's, it is an auxiliary function to the check_winner 
 def check_token(board,x,y, x_incr, y_incr, player):
     if(x+3*x_incr>=len(board[0]) or x+3*x_incr<0 or y+3*y_incr>=len(board) or y+3*y_incr<0): # checks if the position given can be used to check the direction desired (if it isn't going to give error of array ot of index)
         return 0
@@ -126,6 +125,7 @@ def check_token(board,x,y, x_incr, y_incr, player):
     else:
         return 0
 
+#this function verifys if the board is an terminal state, meaning if either the AI or the human player won, or if the board is full
 def check_winner(board):
     for row in range (len(board)):
         for col in  range (len(board[0])):
@@ -156,7 +156,7 @@ def check_winner(board):
     return -1
     
     
-
+#this function simulates an game with random moves until it reaches an terminal state, then returns the results as an win for the AI or not
 def simulate(node):
     board=copy.deepcopy(node.state)
     result=check_winner(board)
@@ -173,7 +173,7 @@ def simulate(node):
 
     return result
 
-
+# this function updates the statistics tree with the information from the function simulate
 def backpropagate(node, result):
     if (node==None):
         return
@@ -181,21 +181,30 @@ def backpropagate(node, result):
     node.n_victories+=result
     backpropagate(node.father_node,result)
 
+
+# this function basicly takes the child nodes from the node_to_expand and simulates and 100 games from the state saved in the node
+# we choose to run 100 simulation on each node so that each time we have to select a new node to expand we have more reliable infomation
 def simulate_and_backpropagate(nodes):
     for node in nodes:
         for _ in range(100):
             result=simulate(node)
             backpropagate(node,result)
 
+# this function serves to find where the AI played without having to always have that information stored,
+# as the board is small and this function is only run once every time the mcts is called, we considered that
+# it wouldn't impact the performance 
 def find_col(current_board, board_2):
     for row in range(len(current_board)):
         for col in range(len(current_board[0])):
             if(current_board[row][col]!=board_2[row][col] and board_2[row][col]=="O"):
                 return col
 
+#mcst algorithm that chooses the best play based on a statitics tree, it has 5 sec to do the simulation then it chooses the most likely play to lead to a win
+# since in the expand node the human player is considered to be making random plays it is expected that sometimes it is going to make thw worng play
+# mainly when the board is fuller, could be correted with the use of the a* algorithm to make does plays instead of random  
 def best_move (state, _):
     current_board=Tree(state)
-    timeout=5#50000000000000
+    timeout=5
     start_time=time.time()
     while(time.time()-start_time<timeout):
         node_to_expand=select_node_to_expand(current_board)
@@ -223,16 +232,7 @@ def best_move (state, _):
 
 
 
-# test=[      [' ',' ',' ',' ',' ',' ',' '],
-#             [' ',' ',' ',' ',' ',' ',' '],
-#             [' ',' ',' ',' ',' ',' ',' '],
-#             [' ',' ',' ',' ',' ',' ',' '],
-#             [' ',' ',' ',' ',' ',' ',' '],
-#             [' ',' ',' ',' ',' ',' ',' ']]
 
-
-
-# print(best_move(test))
 
 
 
