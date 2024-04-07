@@ -90,17 +90,31 @@ def make_temp_move(board_temp, x, player):
 
     return board_temp
 
+def is_valid_move(board, col):
+    """
+    Check if a move is valid in a given column.
+
+    Parameters:
+    - board (list): The game board.
+    - col (int): The column index to check.
+
+    Returns:
+    - valid (bool): True if the move is valid, False otherwise.
+    """
+    return board[0][col] == ' '
+
 # This function is given:
+#   - a board
 #   - a list of values
 #
 # This function returns the index of the max value, which correspond to the col in which the AI is going to play
 
 
-def max_val_index(values):
+def max_val_index(board, values):
     max= values[0]
     index=0
     for i in range (1,len(values)):
-        if(values[i]>max):
+        if((values[i]>=max) and is_valid_move(board, i)):
             max=values[i]
             index=i
     
@@ -122,7 +136,7 @@ def best_move(board,player):
     
     print(values)
     
-    return max_val_index(values)
+    return max_val_index(board, values)
 
 
 
